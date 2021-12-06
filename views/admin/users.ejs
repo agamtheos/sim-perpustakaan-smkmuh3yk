@@ -1,0 +1,142 @@
+<% include ../partials/header %>
+
+    
+<!--NAVIGATION BAR FOR ADMIN-->
+<% include ../partials/adminNav %>
+
+<header id="main-header" class="py-2 bg-primary text-white">
+  <div class="container">
+    <div class="row">
+      <div class="col-md-6">
+        <h1><i class="fa fa-users"></i> Pengguna</h1>
+      </div>
+    </div>
+  </div>
+</header>
+
+<!-- ACTIONS -->
+<section id="actions" class="py-4 mb-4">
+  <div class="container">
+    <div class="row">
+      <div class="col-md-3 mr-auto">
+          <a href="/admin" class="btn btn-light btn-block">
+          <i class="fa fa-arrow-left"></i> Kembali ke Dashboard
+        </a>
+      </div>
+      <div class="col-md-6">
+        <form action="/admin/users/1" method="POST">
+          <div class="input-group">
+            <input name="searchUser" type="text" class="form-control" placeholder="Cari pengguna dari Nama Depan, Nama Belakang, username, E-mail">
+            <span class="input-group-btn">
+              <button class="btn btn-primary">Cari</button>
+            </span>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</section>
+
+<% include ../partials/alerts %>
+
+<!-- USERS -->
+<section id="users">
+  <div class="container">
+    <div class="row">
+      <div class="col">
+        <div class="card">
+          <div class="card-header">
+            <h4>Users</h4>
+          </div>
+          <table class="table table-striped">
+            <thead class="thead-inverse">
+              <tr>
+                <th>Nama</th>
+                <th>Username</th>
+                <th>Email</th>
+                <th>Jenis Kelamin</th>
+                <th>Tanggal Daftar</th>
+                <th>Pelanggaran</th>
+                <th>Denda</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody>
+              
+            <% users.forEach(user => { %>
+              <%if (user.isAdmin) return; %>
+                <tr>
+                <td><%=user.firstName + " " + user.lastName%></td>
+                <td><a href="/admin/users/profile/<%=user._id%>" title="Visit this user"><%=user.username%></a></td>
+                <td><%=user.email%></td>
+                <td><%=user.gender%></td>
+                <td><%=user.joined.toDateString()%></td>
+                <td><%=user.violationFlag%></td>
+                <td>$<%=user.fines%></td>
+                <td>
+                  <%if(user.bookIssueInfo.length > 0) { %>
+                  <a href="/admin/users/delete/<%=user._id%>" title="Pengguna sedang meminjam buku. Anda yakin ingin menghapus akun ini?" class="btn btn-sm btn-danger">
+                    <i class="fa fa-trash"></i>
+                  </a>
+                <%  } else { %>
+                  <a href="/admin/users/delete/<%=user._id%>" title="Hapus Pengguna" class="btn btn-sm btn-danger">
+                    <i class="fa fa-trash"></i>
+                  </a>
+                <% } %>
+                
+                <% if(user.violationFlag) { %> 
+                    <a href="/admin/users/flagged/<%=user._id%>" title="Hapus Pelanggaran" class="btn btn-sm btn-warning">
+                      <i class="fa fa-flag"></i>
+                    </a>
+                <%  } else {  %>
+                    <a href="/admin/users/flagged/<%=user._id%>" title="Peringatkan Pengguna" class="btn btn-sm btn-success">
+                      <i class="fa fa-flag"></i>
+                    </a>
+                <%  } %>
+                </td>
+              </tr>
+            <% }); %>
+            </tbody>
+          </table>
+
+          <% if (pages > 0) { %>
+            <nav class="mx-auto mb-2">
+              <ul class="pagination ">
+            
+            <% if (current == 1) { %>
+                <li class="page-item disabled"><a class="page-link">Awal</a></li>
+            <% } else { %>
+                <li class="page-item"><a href="/admin/users/1" class="page-link">Awal</a></li>
+            <% } %>
+            
+            <% var i = (Number(current) > 5 ? Number(current) - 4 : 1) %>
+                <% if (i !== 1) { %>
+                  <li class="page-item disabled"><a class="page-link">...</a></li>
+                <% } %>
+                <% for (; i <= (Number(current) + 4) && i <= pages; i++) { %>
+                    <% if (i == current) { %>
+                      <li class="page-item active"><a class="page-link"><%= i %></a></li>
+                    <% } else { %>
+                      <li class="page-item"><a class="page-link" href="/admin/users/<%= i %>"> <%= i %></a> </li>
+                    <% } %>
+                    <% if (i == Number(current) + 4 && i < pages) { %>
+                          <li class="page-item disabled"><a class="page-link">...</a></li>
+                      <% } %>
+                    <% } %>
+                    <% if (current == pages) { %>
+                        <li class="page-item disabled"><a class="page-link">Akhir</a></li>
+                    <% } else { %>
+                        <li class="page-item"><a href="/admin/users/<%= pages %>" class="page-link">Akhir</a></li>
+                <% } %>
+            </ul>
+          </nav>
+          <% } %>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+
+<% include ../partials/footer %>

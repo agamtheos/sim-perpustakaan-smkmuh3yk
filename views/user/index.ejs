@@ -1,0 +1,247 @@
+<% include ../partials/header %>
+
+<!--NAVIGATION BAR FOR USER-->
+<% include ../partials/userNav %>
+
+<!--DASHBOARD SECTION-->
+<header id="main-header" class="py-2 bg-primary text-white">
+  <div class="container">
+    <div class="row">
+      <div class="col-md-6">
+        <h1><i class="fa fa-gear"></i> Dashboard</h1>
+      </div>
+    </div>
+  </div>
+</header>
+
+<% include ../partials/alerts %>
+<!-- ACTIONS -->
+<section id="actions" class="py-4 mb-4 bg-light">
+  <div class="container">
+    <div class="row">
+      <div class="col-md-4">
+        <a href="/books/all/all/1" class="btn btn-primary btn-block">
+          <i class="fa fa-plus"></i> Pinjam Buku
+        </a>
+      </div>
+
+
+      <div class="col-md-4">
+        <a href="/books/return-renew" class="btn btn-info btn-block">
+          <i class="fa fa-retweet"></i> Perpanjang/Kembalikan Buku
+        </a>
+      </div>
+      
+      
+        <div class="col-md-4">
+        <a href="" class="btn btn-danger btn-block" data-toggle="modal" data-target="#payFineModal">
+          <i class="fa fa-credit-card"></i> Bayar Denda
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<section id="home" class="mt-4">
+  <div class="container">
+    <div class="row">
+      <div class="col-md-3">
+        <div class="card">
+          <img src="/images/<%=user.image||"profile.png" %>" class="card-img-top p-1" alt="...">
+          <div class="card-body">
+            <p>Nama : <%=user.firstName%> <%=user.lastName%></p>
+            <p>Email : <%=user.email%></p>
+            <p>Pinjam Buku : <%=user.bookIssueInfo.length%></p>
+            <p>Jatuh Tempo : Rp<%=user.fines%></p>
+            <p>Pelanggaran : <%=user.violationFlag%></p>
+            <p>Bergabung : <%=user.joined.toDateString() %></p>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-9">
+        
+        <div class="card">
+          <div class="card-header text-center">
+            <h4>Aktivitas Terkini</h4>
+          </div>
+          <table class="table table-striped">
+            <thead class="thead-inverse">
+              <tr>
+                <th>Info</th>
+                <th>Kategori</th>
+                <th>Tanggal</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody>
+                <% activities.forEach(activity => { %>
+                <% if(activity.category == 'Issue') { %>
+                      <tr>
+                        <td>Anda telah <span class="table-text">meminjam</span> <%=activity.info.title%></td></td>
+                        <td><%=activity.category%></td>
+                        <td>
+                          <p>Issue :  <%=activity.time.issueDate.toDateString()%></p>
+                          <p>Return :  <%=activity.time.returnDate.toDateString()%></p>
+                        </td>
+                      </tr>  
+                <%  } else if(activity.category == 'Return') { %>
+                      <tr>
+                          <td>Anda telah <span class="table-text">mengembalikan</span> <%=activity.info.title%></td></td>
+                          <td><%=activity.category%></td>
+                          <td>
+                            <p>Issue :  <%=activity.time.issueDate.toDateString()%></p>
+                            <p>Return :  <%=activity.time.returnDate.toDateString()%></p>
+                          </td>
+                      </tr>
+                <%  } else if(activity.category == 'Comment') { %>
+                        <tr>
+                          <td>Anda <span class="table-text">berkomentar</span> pada buku <%=activity.info.title%></td>
+                          <td><%= activity.category %></td>
+                          <td><%=activity.entryTime.toDateString()%></td>
+                          <td><a href="/books/details/<%=activity.info.id%>" class="btn btn-sm btn-secondary">
+                            <i class="fa fa-angle-double-right"></i> Details
+                          </a></td>
+                        </tr>
+                <%  } else if(activity.category == 'Fine') {%>
+                        <tr>
+                          <td>Anda <span class="table-text">membayar</span> $<%=activity.fine.amount%> fines</td>
+                          <td><%=activity.category%></td>
+                          <td><%=activity.fine.date%></td>
+                          <td>
+                            <button class="btn btn-sm btn-secondary">
+                              <i class="fa fa-check"></i> Paid Successfully
+                            </button>
+                          </td>
+                        </tr>
+                  <%  } else if(activity.category == 'Renew') { %>
+                          <tr>
+                              <td>Anda telah <span class="table-text">memperpanjang</span> <%=activity.info.title%></td>
+                              <td><%=activity.category%></td>
+                              <td>
+                                <p>Issue :  <%=activity.time.issueDate.toDateString()%></p>
+                                <p>Return :  <%=activity.time.returnDate.toDateString()%></p>
+                              </td>
+                          </tr>
+                  <% } else if(activity.category == 'Update Profile') { %>
+                            <tr>
+                              <td>Anda baru saja <span class="table-text">update info profil</span> </td>
+                              <td><%=activity.category%></td>
+                              <td>
+                                <%=activity.entryTime.toDateString()%>
+                                </td>
+                              <td>
+                                <a href="/user/1/profile" class="btn btn-sm btn-success" role="button">Kunjungi Profil!</a>
+                              </td>
+                          </tr>
+                  <% } else if(activity.category == 'Update Password') { %>
+                            <tr>
+                              <td>Anda baru saja <span class="table-text">mengganti password</span></td>
+                              <td><%=activity.category%></td>
+                              <td>
+                                <%=activity.entryTime.toDateString()%>
+                                </td>
+                              <td>
+                                <button class="btn btn-sm btn-success">Berhasil ganti Password!</button>
+                              </td>
+                          </tr>
+                  <% } else if(activity.category == 'Upload Photo') { %>
+                            <tr>
+                              <td>Anda baru saja <span class="table-text">mengganti foto profil</span></td>
+                              <td><%=activity.category%></td>
+                              <td>
+                                <%=activity.entryTime.toDateString()%>
+                                </td>
+                              <td>
+                                <button class="btn btn-sm btn-success">Berhasil ganti foto profil!</button>
+                              </td>
+                          </tr>
+                  <% } else if(activity.category == 'Update Comment') { %>
+                        <tr>
+                          <td>Anda telah <span class="table-text">mengganti komentar</span> pada buku <%=activity.info.title%></td>
+                          <td><%= activity.category %></td>
+                          <td><%=activity.entryTime.toDateString()%></td>
+                          <td><a href="/books/details/<%=activity.info.id%>" class="btn btn-sm btn-secondary">
+                            <i class="fa fa-angle-double-right"></i> Details
+                          </a></td>
+                        </tr>
+                  <%  } else if(activity.category == 'Delete Comment') { %>
+                        <tr>
+                          <td>Anda telah <span class="table-text">menghapus komentar</span> pada buku <%=activity.info.title%></td>
+                          <td><%= activity.category %></td>
+                          <td><%=activity.entryTime.toDateString()%></td>
+                          <td><a href="/books/details/<%=activity.info.id%>" class="btn btn-sm btn-secondary">
+                            <i class="fa fa-angle-double-right"></i> Details
+                          </a></td>
+                        </tr>
+                  <%  } %>
+            <% }); %>
+              
+            </tbody>
+          </table>
+          
+          <% if (pages > 0) { %>
+        <nav class="ml-3 mb-2">
+          <ul class="pagination offset-md-3">
+            
+            <% if (current == 1) { %>
+              <li class="page-item disabled"><a class="page-link">Awal</a></li>
+            <% } else { %>
+              <li class="page-item"><a href="/user/1" class="page-link">Awal</a></li>
+            <% } %>
+            
+            <% var i = (Number(current) > 5 ? Number(current) - 4 : 1) %>
+                    <% if (i !== 1) { %>
+                        <li class="page-item disabled"><a class="page-link">...</a></li>
+                    <% } %>
+                    <% for (; i <= (Number(current) + 4) && i <= pages; i++) { %>
+                        <% if (i == current) { %>
+                            <li class="page-item active"><a class="page-link"><%= i %></a></li>
+                        <% } else { %>
+                            <li class="page-item"><a class="page-link" href="/user/<%= i %>"><%= i %></a></li>
+                        <% } %>
+                        <% if (i == Number(current) + 4 && i < pages) { %>
+                            <li class="page-item disabled"><a class="page-link">...</a></li>
+                        <% } %>
+                    <% } %>
+                    <% if (current == pages) { %>
+                        <li class="page-item disabled"><a class="page-link">Akhir</a></li>
+                    <% } else { %>
+                        <li class="page-item"><a href="/user/<%= pages %>" class="page-link">Akhir</a></li>
+                    <% } %>
+          </ul>
+        </nav>
+     <% } %>
+          
+          
+          <!--<nav class="ml-3">-->
+          <!--  <ul class="pagination offset-md-4">-->
+          <!--    <li class="page-item disabled"><a href="#" class="page-link"><i class="fa fa-angle-double-left"></i> Previous</a></li>-->
+          <!--    <li class="page-item active"><a href="#" class="page-link">1</a></li>-->
+          <!--    <li class="page-item"><a href="#" class="page-link">2</a></li>-->
+          <!--    <li class="page-item"><a href="#" class="page-link">3</a></li>-->
+          <!--    <li class="page-item"><a href="#" class="page-link">Next <i class="fa fa-angle-double-right"></i></a></li>-->
+          <!--  </ul>-->
+          <!--</nav>-->
+          
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!--PAY FINE MODAL-->
+<div class="modal fade" id="payFineModal">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header bg-danger text-white">
+        <h5 class="modal-title" id="payFineModalLabel">
+          This route is still under development. will be added in next version
+        </h5>
+        <button class="close" data-dismiss="modal" ><span>&times;</span></button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<% include ../partials/footer %>
