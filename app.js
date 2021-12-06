@@ -22,7 +22,7 @@ const express = require("express"),
 // uncomment below line for first time to seed database;
 // Seed(1000);
 
-if (process.env.NODE_ENV !== "production") require("dotenv").config();
+// if (process.env.NODE_ENV !== "production") require("dotenv").config();
 
 // app config
 app.set("view engine", "ejs");
