@@ -23,6 +23,7 @@ const express = require("express"),
 // Seed(1000);
 
 // if (process.env.NODE_ENV !== "production") require("dotenv").config();
+require("dotenv").config();
 
 // app config
 app.set("view engine", "ejs");
