@@ -1,6 +1,9 @@
 # sim-perpustakaan-smkmuh3yk
 
 ## Sistem Pustaka Online Sederhana
+### DEMO
+Heroku : [Perpustakaan SMK Muhammadiyah 3 Yogyakarta](https://perpustakaan-sim.herokuapp.com/)
+
 ## Build w/  : 
             - Node Js
             - Express Js
