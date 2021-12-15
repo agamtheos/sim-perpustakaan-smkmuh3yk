@@ -18,7 +18,7 @@ const express = require("express"),
   authRoutes = require("./routes/auth");
 
 
-// DB_URL=mongodb+srv://perpussim:perpus123@perpus.npn6e.mongodb.net/perpus?retryWrites=true&w=majority
+
 // const Seed = require('./seed');
 
 // uncomment below line for first time to seed database;
